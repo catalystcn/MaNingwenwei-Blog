@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理面板</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('index') }}">主页</a>
+    </div>
+    <div class="container">
+        <h1>博客管理面板🧰</h1>
+        <a href="{{ url_for('add_post') }}" class="button">创建博客</a>
+        <ul class="post-list">
+            {% for post in posts %}
+            <li class="post-line">
+                <div class="post-header">
+                    <div class="post-title-container">
+                        <h2 class="post-title"><a href="{{ url_for('manage_post', post_id=post[0]) }}">{{ post[1] }}</a></h2>
+                    </div>
+                    <div class="post-date-container">
+                        <p class="post-date">{{ post[3][:10] }}</p>
+                    </div>
+                </div>
+                <div class="delete-button-container">
+                    <form action="{{ url_for('delete_post', post_id=post[0]) }}" method="post" class="delete-form">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button class="delete-button" type="submit" onclick="return confirm('确定要删除该篇博客?')">删除</button>
+                    </form>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="greyLine"></div>
+    </div>
+</body>
+</html>

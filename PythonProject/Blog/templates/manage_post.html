@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ post[1] }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='pygments.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('index') }}">主页</a>
+        <a href="{{ url_for('manage_panel') }}">返回管理系统</a>
+    </div>
+    <div class="container">
+
+        <h1>🌈{{ post[1] }}</h1>
+        <div class="greyLine" style="border-bottom: 1px solid #4CAF50;"></div>
+        <div class="post-content">
+            {{ post_content|md|safe}}
+        </div>
+        <div class="greyLine"></div>
+    </div>
+</body>
+</html>

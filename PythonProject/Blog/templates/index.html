@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💕马宁文玮的Blog💕</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('index') }}">主页</a>
+        <a href="{{ url_for('toolbox') }}">工具箱</a>
+        <a href="{{ url_for('manage') }}" >管理系统入口</a>
+    </div>
+    <div class="container mt-5">
+        <pre >
+ __      __          ___                                                __
+/\ \  __/\ \        /\_ \                                              /\ \__
+\ \ \/\ \ \ \     __\//\ \      ___     ___     ___ ___       __       \ \ ,_\    ___
+ \ \ \ \ \ \ \  /'__`\\ \ \    /'___\  / __`\ /' __` __`\   /'__`\      \ \ \/   / __`\
+  \ \ \_/ \_\ \/\  __/ \_\ \_ /\ \__/ /\ \L\ \/\ \/\ \/\ \ /\  __/       \ \ \_ /\ \L\ \
+   \ `\___x___/\ \____\/\____\\ \____\\ \____/\ \_\ \_\ \_\\ \____\       \ \__\\ \____/
+    '\/__//__/  \/____/\/____/ \/____/ \/___/  \/_/\/_/\/_/ \/____/        \/__/ \/___/
+
+                          ____     ___
+                         /\  _`\  /\_ \
+  ___ ___    __  __      \ \ \L\ \\//\ \      ___      __
+/' __` __`\ /\ \/\ \      \ \  _ <' \ \ \    / __`\  /'_ `\
+/\ \/\ \/\ \\ \ \_\ \      \ \ \L\ \ \_\ \_ /\ \L\ \/\ \L\ \
+\ \_\ \_\ \_\\/`____ \      \ \____/ /\____\\ \____/\ \____ \
+ \/_/\/_/\/_/ `/___/> \      \/___/  \/____/ \/___/  \/___L\ \
+                 /\___/                                /\____/
+                 \/__/                                 \_/__/
+        </pre>
+<!--        <h1>欢迎来到马宁文玮的Blog✏️</h1>-->
+        <ul class="list-group">
+            {% for post in posts %}
+            <a href="{{ url_for('post', post_id=post[0]) }}" class="post-card">
+            <li class="list-group-item">
+                <div class="post-header">
+                    <h2 class="post-title">{{ post[1] }}</h2>
+                    <p class="post-date">{{ post[3][:10] }}</p> <!-- Display only the date part -->
+                </div>
+                <p class="post-content">{{ post[2][:100] }}...</p>
+            </li>
+            </a>
+            <div class="greyLine"></div>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

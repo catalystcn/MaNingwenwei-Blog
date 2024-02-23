@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            text-align: center; /* Center-align the contents */
+        }
+
+        form {
+            display: inline-block; /* Display the form as inline block */
+            text-align: left; /* Align form contents to the left */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px; /* Adjust margin-bottom for spacing */
+        }
+
+        input[type="password"] {
+            width: 250px; /* Set the width of the input field */
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        button[type="submit"] {
+            display: block; /* Display the button as a block element */
+            width: 100%; /* Set the width to fill the container */
+            padding: 10px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('index') }}">主页</a>
+    </div>
+    <div class="container">
+        <h1>博客管理系统</h1>
+        <div class="greyLine"></div>
+        <form method="post">
+            <label for="password">密码:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">登录</button>
+        </form>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <div class="greyLine"></div>
+    </div>
+</body>
+</html>

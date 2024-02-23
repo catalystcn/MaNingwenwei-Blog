@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>合并PDF</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #merge-form {
+            text-align: center;
+        }
+        .button {
+            margin-top: 10px;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('index') }}">主页</a>
+        <a href="{{ url_for('toolbox') }}">工具箱</a>
+    </div>
+    <div class="container">
+        <h1>🌈合并PDF文件</h1>
+        <div class="greyLine"></div>
+        <form id="merge-form" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="folder">选择PDF文件:</label>
+                <input type="file" id="folder" name="folder[]" multiple required>
+            </div>
+            <div class="greyLine"></div>
+            <input type="submit" value="合并PDF" class="button">
+            <div class="greyLine"></div>
+            <a id="download-btn" href="#" download="merged_pdf.pdf" class="button">下载合并后的PDF</a>
+        </form>
+        <div class="greyLine"></div>
+    </div>
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <p>合并完成！</p>
+            <button id="closeModalBtn">关闭</button>
+        </div>
+    </div>
+    <script>
+        $('#merge-form').submit(function(e) {
+            e.preventDefault();
+
+            var formData = new FormData(this);
+
+            $.ajax({
+                type: 'POST',
+                url: '/merge_pdf',
+                data: formData,
+                processData: false,
+                contentType: false,
+                xhr: function() {
+                    var xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener('progress', function(evt) {
+                        if (evt.lengthComputable) {
+                            var percentComplete = (evt.loaded / evt.total) * 100;
+                            $('#progress-bar').val(percentComplete);
+                        }
+                    }, false);
+                    return xhr;
+                },
+                success: function(response) {
+                    $('#myModal').show();  // Show modal
+                    $('#download-btn').attr('href', response.file_url);
+                },
+                error: function(xhr, status, error) {
+                    console.log('Error:', error);
+                }
+            });
+
+            $('#download-btn').addClass('disabled'); // Disable download button while merging
+        });
+        // Close modal when "关闭" button is clicked
+        $('#closeModalBtn').click(function() {
+            $('#myModal').hide();
+        });
+    </script>
+</body>
+</html>

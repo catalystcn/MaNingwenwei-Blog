@@ -1,0 +1,36 @@
+<!-- toolbox.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工具箱</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('index') }}">主页</a>
+    </div>
+    <div class="container">
+        <h1>工具箱🎲</h1>
+        <div class="tool-cards">
+            <!-- Tool card with hover effect -->
+            <a href="{{ url_for('tool1') }}" class="tool-card">
+                <div>
+                    合并PDF
+                </div>
+            </a>
+        </div>
+        <div class="tool-cards">
+            <!-- Tool card with hover effect -->
+            <a href="" class="tool-card">
+                <div>
+                    待开发
+                </div>
+            </a>
+        </div>
+        <div class="greyLine"></div>
+    </div>
+</body>
+</html>

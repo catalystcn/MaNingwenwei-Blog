@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创建新博客</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('index') }}">主页</a>
+        <a href="{{ url_for('manage_panel') }}">返回管理系统</a>
+    </div>
+    <div class="container">
+        <h1>创建博客</h1>
+        <form method="post">
+            <label for="title">标题:</label><br>
+            <input type="text" id="title" name="title" required maxlength="15"><br>
+            <label for="content">正文:</label><br>
+            <textarea id="content" name="content" rows="15" required></textarea><br>
+            <button type="submit">添加</button>
+        </form>
+        <div class="greyLine"></div>
+    </div>
+</body>
+</html>
