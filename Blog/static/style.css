@@ -1,0 +1,469 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.navbar {
+    background-color: #333;
+    overflow: hidden;
+}
+
+.navbar a {
+    float: left;
+    display: block;
+    color: #fff;
+    text-align: center;
+    padding: 14px 20px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.navbar a:hover {
+    background-color: #ddd;
+    color: #333;
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+}
+
+.button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
+
+.post-list {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 40px;
+}
+
+.post-list li {
+    margin-bottom: 0px;
+    margin-top: 5px;
+}
+
+.post-list li h2 {
+    margin-top:10px;
+}
+
+.post-list li p {
+    margin: 0;
+}
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.post-title {
+    margin-top: 10px; /* Adjust spacing between post title and post content */
+}
+
+.post-title a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.post-title a:hover{
+    color:#2ecc71;
+    transition:color 0.2s linear;
+}
+
+.tool-cards a:hover{
+    background:#4CAF50;
+    color: white;
+    transition:background-color 0.3s linear;
+}
+
+.post-date {
+    font-size: 12px;
+    color: #666;
+    float: right; /* Align to the right */
+    margin-left: 10px; /* Add spacing between date and delete button */
+    margin-top: 5px; /* Add some top margin */
+}
+
+.list-group{
+    margin-top: 40px;
+    margin-left:2%;
+    margin-right:8%;
+}
+
+.list-group-item {
+    border: 1px solid #EEEEEE; /* Set card border */
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1); /* Add a subtle shadow effect */
+    border-radius:10px;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 600px;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom:10px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Style for the delete button */
+.delete-button {
+    background-color: #dc3545; /* Red background color */
+    color: #fff;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right; /* Align to the right */
+}
+
+.delete-button:hover {
+    background-color: #c82333; /* Darker red on hover */
+}
+
+/* Style for the delete button */
+.delete-button {
+    background-color: #dc3545; /* Red background color */
+    color: #fff;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right; /* Align to the right */
+}
+
+/* Style for the post header */
+.post-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top:15px;
+    padding-left:15px;
+    padding-right:15px;
+}
+
+/* Style for the post title container */
+.post-title-container {
+    flex-grow: 1; /* Allow title to take remaining space */
+}
+
+/* Style for the post date container */
+.post-date-container {
+    margin-left: 10px; /* Add spacing between title and date */
+    margin-bottom: 5px;
+}
+
+/* Style for the delete button */
+.delete-button {
+    background-color: #dc3545; /* Red background color */
+    color: #fff;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.delete-button-container{
+    margin-bottom: 0px;
+}
+
+.delete-button:hover {
+    background-color: #c82333; /* Darker red on hover */
+}
+
+.post-line{
+    display: flex; /* 使用 flex 布局 */
+    flex-direction: column; /* 垂直排列 */
+    border-bottom: 1px solid #4CAF50; /* Add light-colored horizontal lines between posts */
+    padding-bottom: 10px; /* Add some bottom padding to separate posts */
+    margin-left:8%;
+    margin-right:9%;
+}
+
+.greyLine{
+    margin-bottom:30px;
+    height:10px;
+}
+
+/* style.css */
+
+/* Set initial background color */
+body {
+    background: linear-gradient(to right, #3498db, #2ecc71, #e74c3c);
+    background-size: 400% 400%;
+    animation: fluidBackground 20s infinite;
+}
+
+/* Define the fluid background animation */
+@keyframes fluidBackground {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Container with frosted glass effect */
+.container {
+    margin-top:40px;
+    background-color: rgba(255, 255, 255, 0.85); /* Set a semi-transparent white background */
+    padding: 20px;
+    border-radius: 10px;
+    backdrop-filter: blur(8px); /* Apply a blur effect to the container */
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1); /* Add a subtle shadow effect */
+    transition: transform 0.3s ease; /* Add transition for smooth effect */
+}
+
+/* Add click effect */
+.container:hover {
+    transform: scale(1.05); /* Increase size on hover */
+}
+
+.container-tool {
+    margin: auto;
+    width: 80%;
+    max-width: 600px;
+    margin-top:40px;
+    background-color: rgba(255, 255, 255, 0.85); /* Set a semi-transparent white background */
+    padding: 20px;
+    border-radius: 10px;
+    backdrop-filter: blur(8px); /* Apply a blur effect to the container */
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1); /* Add a subtle shadow effect */
+    transition: transform 0.3s ease; /* Add transition for smooth effect */
+}
+
+/* Add click effect */
+.container-tool:hover {
+    transform: scale(1.05); /* Increase size on hover */
+}
+
+/* style.css */
+
+/* Tool card container */
+.tool-cards {
+    display: flex; /* Use flexbox for layout */
+    justify-content: center; /* Center-align cards horizontally */
+    flex-wrap: wrap; /* Allow cards to wrap to the next line */
+}
+
+/* Tool card */
+.tool-card {
+    width: 80%; /* Set card width */
+    height: 80px; /* Set card height */
+    background-color: #f0f0f0; /* Set card background color */
+    border: 1px solid #ccc; /* Set card border */
+    border-radius: 10px; /* Set card border radius */
+    overflow: hidden; /* Hide overflow content */
+    margin: 10px; /* Add margin between cards */
+    position: relative; /* Position relative for pseudo-elements */
+    transition: box-shadow 0.3s ease; /* Add transition for box-shadow */
+    color:black;
+}
+
+/* Tool card content */
+.tool-card > div {
+    position: absolute; /* Position content absolutely */
+    top: 50%; /* Vertically center content */
+    left: 50%; /* Horizontally center content */
+    transform: translate(-50%, -50%); /* Center content */
+    text-align: center; /* Center-align text */
+}
+
+/* Tool card hover effect */
+.tool-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add box-shadow on hover */
+}
+
+/* Tool card link */
+.tool-card a {
+    text-decoration: none; /* Remove underline */
+    color: inherit; /* Inherit color from parent */
+}
+
+#merge-form {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+label {
+    margin-right: 10px;
+}
+
+input[type="file"] {
+    flex: 1;
+}
+
+#progress-bar {
+    width: 100%;
+    height: 30px;
+    margin-bottom: 20px;
+}
+
+#download-btn {
+    margin:auto;
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-bottom: 20px;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+#download-btn:hover {
+    background-color: #45a049;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    width: 28%;
+    text-align: center;
+}
+.modal-content p {
+    margin-bottom: 20px;
+}
+.modal-content button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.modal-content button:hover {
+    background-color: #45a049;
+}
+
+pre { // 兼容多个浏览器
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    *word-wrap: break-word;
+    *white-space : normal ;
+    background: linear-gradient(to right, red, blue);
+    -webkit-background-clip: text;
+    color: transparent;
+    font-weight: bold;
+}
+
+.post-content{
+    /* 其他样式设置 */
+    overflow-x: auto;
+    border-radius: 10px; /* 减小圆角半径 */
+    padding-left:15px;
+    padding-right:15px;
+}
+
+.post-content pre{
+    /* 设置代码块的样式 */
+    max-width: 100%;
+    white-space: pre-wrap; /* 允许文本换行 */
+    padding: 10px; /* 添加内边距 */
+    margin: 0; /* 可以将外边距设置为 0，以确保不会产生额外的间距 */
+}
+
+ul {
+    list-style:none;
+}
+
+.codehilite{
+    border-radius:10px;
+}
+
+.list-group-item:hover{
+    color:white;
+    background-color: #4CAF50;
+    transition: background-color 0.3s;
+}
+
+
