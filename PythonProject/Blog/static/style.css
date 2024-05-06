@@ -125,8 +125,7 @@ body {
     background-color: #fff;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    width: 80%;
-    max-width: 600px;
+    width: 60%;
 }
 
 h1 {
@@ -278,7 +277,7 @@ body {
 
 /* Add click effect */
 .container:hover {
-    transform: scale(1.05); /* Increase size on hover */
+    transform: scale(1.03); /* Increase size on hover */
 }
 
 .container-tool {
@@ -423,7 +422,7 @@ input[type="file"] {
     background-color: #45a049;
 }
 
-pre { // 兼容多个浏览器
+.welcome { // 兼容多个浏览器
     white-space: pre-wrap;
     white-space: -moz-pre-wrap;
     white-space: -pre-wrap;
@@ -471,4 +470,163 @@ ul {
     text-decoration: none;
 }
 
+.container_hotnews{
+    text-decoration:none;
+    color:inherit;
+    margin-top:30px;
+    margin-bottom:30px;
+    background-color: rgba(255, 255, 255, 0.85); /* Set a semi-transparent white background */
+    padding: 15px;
+    border-radius: 10px;
+    backdrop-filter: blur(8px); /* Apply a blur effect to the container */
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1); /* Add a subtle shadow effect */
+    transition: transform 0.3s ease; /* Add transition for smooth effect */
+}
 
+#hot-search-content{
+    max-height: 380px; /* Adjust the maximum height as needed */
+    width:95%;
+    overflow-y: auto; /* Enable vertical scrollbar when content overflows */
+}
+
+#update_time:hover{
+    background:#4CAF50;
+    color: white;
+    transition:background-color 0.2s linear;
+}
+
+#inputText {
+    max-height:300px;
+    min-height:200px;
+    height:200px;
+    font-size: 16px;
+}
+
+#outputText {
+    max-height:300px;
+    min-height:200px;
+    height:200px;
+    font-size: 16px;
+}
+
+/* Basic styling */
+.song-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+.song-item img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin-right: 10px;
+    border-radius: 5px;
+}
+.play-btn {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.pagination-container {
+    margin-top: 20px;
+    display: flex;
+}
+.pagination-btn {
+    margin-right: 10px;
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+/* New styling for floating player */
+#floating-player {
+    position: fixed;
+    bottom: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 400px; /* Maximum width to ensure it doesn't become too wide on larger screens */
+    background-color: #fff;
+    padding: 10px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+    opacity: 0; /* Initially hidden */
+    z-index: 999;
+    transition: opacity 0.3s ease; /* Smooth transition for visibility */
+}
+
+#floating-player:hover {
+    opacity: 1; /* Show the floating player on hover */
+}
+#floating-player img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-right: 10px;
+    border-radius: 5px;
+}
+#floating-player .song-info {
+    display: flex;
+    align-items: center;
+}
+#floating-player .progress-bar {
+    width: 100%;
+    height: 5px;
+    background-color: #ddd;
+    position: relative;
+    margin-top: 5px;
+}
+#floating-player .progress {
+    height: 100%;
+    background-color: #007bff;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+#floating-player #play-pause-btn {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: auto; /* Align to the right */
+}
+
+/* Hidden popup */
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fefefe;
+    border: 1px solid #888;
+    z-index: 9999;
+}
+
+.popup-content {
+    padding: 20px;
+}
+
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}

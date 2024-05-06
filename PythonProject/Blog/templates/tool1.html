@@ -19,6 +19,7 @@
         }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="./static/cursor_click.js"></script>
 </head>
 <body>
     <div class="navbar">
@@ -36,7 +37,7 @@
             <div class="greyLine"></div>
             <input type="submit" value="合并PDF" class="button">
             <div class="greyLine"></div>
-            <a id="download-btn" href="#" download="merged_pdf.pdf" class="button">下载合并后的PDF</a>
+            <a id="download-btn" href="{{ url_for('download_merged_pdf') }}" download="merged_pdf.pdf" class="button">下载合并后的PDF</a>
         </form>
         <div class="greyLine"></div>
     </div>
@@ -70,7 +71,7 @@
                 },
                 success: function(response) {
                     $('#myModal').show();  // Show modal
-                    $('#download-btn').attr('href', response.file_url);
+<!--                    $('#download-btn').attr('href', response.file_url);-->
                 },
                 error: function(xhr, status, error) {
                     console.log('Error:', error);
@@ -84,5 +85,7 @@
             $('#myModal').hide();
         });
     </script>
+
 </body>
 </html>
+

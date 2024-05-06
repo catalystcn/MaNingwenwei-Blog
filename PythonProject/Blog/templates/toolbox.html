@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>工具箱</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="./static/cursor_click.js"></script>
 </head>
 <body>
     <div class="navbar">
@@ -24,9 +25,33 @@
         </div>
         <div class="tool-cards">
             <!-- Tool card with hover effect -->
-            <a href="" class="tool-card">
+            <a href="{{ url_for('tool2') }}" class="tool-card">
                 <div>
-                    待开发
+                    实时微博热搜
+                </div>
+            </a>
+        </div>
+        <div class="tool-cards">
+            <!-- Tool card with hover effect -->
+            <a href="{{ url_for('tool3') }}" class="tool-card">
+                <div>
+                    智能翻译
+                </div>
+            </a>
+        </div>
+        <div class="tool-cards">
+            <!-- Tool card with hover effect -->
+            <a href="{{ url_for('tool4') }}" class="tool-card">
+                <div>
+                    音乐播放器
+                </div>
+            </a>
+        </div>
+        <div class="tool-cards">
+            <!-- Tool card with hover effect -->
+            <a href="{{ url_for('tool5') }}" class="tool-card">
+                <div>
+                    待开发~~~
                 </div>
             </a>
         </div>
