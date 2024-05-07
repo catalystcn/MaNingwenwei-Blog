@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能翻译</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="./static/cursor_click.js"></script>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('index') }}">主页</a>
+        <a href="{{ url_for('toolbox') }}">工具箱</a>
+    </div>
+    <div class="container">
+        <h1>🌈智能翻译</h1>
+        <div class="greyLine" style="color:green">支持中文转英文，任何语言转中文</div>
+        <form action="/translate" method="post">
+            <label for="inputText">输入内容：</label>
+            <textarea id="inputText" name="inputText"></textarea>
+            <button type="submit">翻译</button>
+        </form>
+        <label for="outputText">翻译结果：</label>
+        <textarea id="outputText" name="outputText" readonly></textarea>
+    </div>
+    <script>
+        document.querySelector('form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const response = await fetch('/translate', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.text();
+            document.getElementById('outputText').value = result;
+        });
+    </script>
+</body>
+</html>

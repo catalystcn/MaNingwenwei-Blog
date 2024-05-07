@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音乐播放器</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="./static/ajax.js"></script>
+    <script src="./static/cursor_click.js"></script>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('index') }}">主页</a>
+        <a href="{{ url_for('toolbox') }}">工具箱</a>
+    </div>
+    <div class="container">
+        <h1>🌈音乐播放器</h1>
+        <div class="greyLine" style="color:green">你想听哪位歌手的歌呢？</div>
+        <input type="text" id="singerName" placeholder="请输入歌手名">
+        <button onclick="searchSongs()">搜索</button>
+        <div id="songList"></div>
+        <div class="pagination-container">
+            <button id="firstPageBtn" class="pagination-btn" style="display: none;" onclick="firstPage()">前10首</button>
+            <button id="nextPageBtn" class="pagination-btn" style="display: none;" onclick="nextPage()">后10首</button>
+        </div>
+    </div>
+
+    <!-- Floating Player -->
+    <div id="floating-player">
+        <div class="song-info">
+            <img id="floating-cover" src="" alt="Cover">
+            <div id="floating-title"></div>
+            <button id="play-pause-btn" >暂停</button>
+        </div>
+        <div class="progress-bar">
+            <div id="floating-progress" class="progress"></div>
+        </div>
+    </div>
+
+    <!-- Hidden popup -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <p>该歌曲因版权限制，无法播放</p>
+            <button id="closeModalBtn">关闭</button>
+        </div>
+    </div>
+
+    <script>
+
+        var currentPage = 0;
+        var songs = [];
+        var audio = new Audio();
+
+        function searchSongs() {
+            currentPage = 0;
+            var singerName = document.getElementById('singerName').value;
+            getSongs(singerName);
+        }
+
+        function getSongs(singerName) {
+            // Make AJAX request to server to get song list
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/search?singer=' + encodeURIComponent(singerName), true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        console.error('找到歌曲')
+                        songs = JSON.parse(xhr.responseText);
+                        displaySongs();
+                    } else {
+                        console.error('Error:', xhr.status);
+                    }
+                }
+            };
+            xhr.send();
+        }
+
+        function displaySongs() {
+            var songListContainer = document.getElementById('songList');
+            songListContainer.innerHTML = '';
+            var endIndex = Math.min((currentPage + 1) * 10, songs.length);
+
+            for (var i = currentPage * 10; i < endIndex; i++) {
+                var song = songs[i];
+                var songItem = document.createElement('div');
+                songItem.classList.add('song-item');
+
+                var img = document.createElement('img');
+                img.src = song.song_cover;
+                songItem.appendChild(img);
+
+                var title = document.createElement('span');
+                title.textContent = song.song_name;
+                songItem.appendChild(title);
+
+                var playBtn = document.createElement('button');
+                playBtn.classList.add('play-btn');
+                playBtn.textContent = '播放';
+
+                // Creating a closure to capture the current value of 'song'
+                (function (currentSong) {
+                    playBtn.addEventListener('click', function () {
+                        playSong(currentSong.song_url, currentSong.song_cover, currentSong.song_name);
+                    });
+                })(song);
+
+                songItem.appendChild(playBtn);
+
+                songListContainer.appendChild(songItem);
+            }
+
+            if (endIndex < songs.length) {
+                document.getElementById('nextPageBtn').style.display = 'inline-block';
+                if(currentPage != 0){
+                    document.getElementById('firstPageBtn').style.display = 'inline-block';
+                } else {
+                    document.getElementById('firstPageBtn').style.display = 'none';
+                }
+            } else {
+                document.getElementById('nextPageBtn').style.display = 'none';
+            }
+        }
+
+        function playSong(songUrl, coverUrl, title) {
+            audio.onerror = function() {
+                $('#myModal').show();
+            };
+
+            // Show floating player
+            var floatingPlayer = document.getElementById('floating-player');
+            floatingPlayer.style.display = 'block';
+
+            audio.src = songUrl;
+            audio.play();
+
+            // Update floating player
+            document.getElementById('floating-cover').src = coverUrl;
+            document.getElementById('floating-title').textContent = title;
+
+            // Show floating player
+            document.getElementById('floating-player').style.display = 'block';
+
+            // Play/Pause button
+            var playPauseBtn = document.getElementById('play-pause-btn');
+            playPauseBtn.textContent = '暂停';
+            playPauseBtn.onclick = function () {
+                if (audio.paused) {
+                    audio.play();
+                    playPauseBtn.textContent = '暂停';
+                } else {
+                    audio.pause();
+                    playPauseBtn.textContent = '播放';
+                }
+            };
+
+            // Progress bar
+            var progress = document.getElementById('floating-progress');
+            audio.addEventListener('timeupdate', function () {
+                var percent = (audio.currentTime / audio.duration) * 100;
+                progress.style.width = percent + '%';
+            });
+
+            // Drag progress
+            var progressBar = document.querySelector('#floating-player .progress-bar');
+            progressBar.addEventListener('click', function (event) {
+                var boundingRect = progressBar.getBoundingClientRect();
+                var offsetX = event.clientX - boundingRect.left;
+                var percent = offsetX / progressBar.clientWidth;
+                audio.currentTime = percent * audio.duration;
+            });
+        }
+
+        // Close modal when "关闭" button is clicked
+        $('#closeModalBtn').click(function() {
+            $('#myModal').hide();
+        });
+
+        function nextPage() {
+            currentPage++;
+            displaySongs();
+        }
+
+        function firstPage() {
+            if (currentPage > 0) {
+                currentPage = currentPage - 1;
+            }
+            displaySongs();
+        }
+    </script>
+</body>
+</html>
