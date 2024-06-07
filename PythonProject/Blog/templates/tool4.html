@@ -45,11 +45,29 @@
         </div>
     </div>
 
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+            <p id="errorMessage"></p>
+            <button id="closeErrorModalBtn">关闭</button>
+        </div>
+    </div>
+
     <script>
 
         var currentPage = 0;
         var songs = [];
         var audio = new Audio();
+
+    // Function to show error modal
+        function showErrorModal(message) {
+            document.getElementById('errorMessage').textContent = message;
+            $('#errorModal').show();
+        }
+
+        // Close error modal when "关闭" button is clicked
+        $('#closeErrorModalBtn').click(function() {
+            $('#errorModal').hide();
+        });
 
         function searchSongs() {
             currentPage = 0;
@@ -67,17 +85,38 @@
                         console.error('找到歌曲')
                         songs = JSON.parse(xhr.responseText);
                         displaySongs();
+                        checkCurrentPageSongs();
+                    } else if (xhr.status === 404) {
+                        showErrorModal('搜索无结果，请检查歌手名是否正确');
                     } else {
-                        console.error('Error:', xhr.status);
+                        showErrorModal('发生错误，请重试！');
                     }
                 }
             };
             xhr.send();
         }
 
+        function checkCurrentPageSongs() {
+            // 检查当前页面的歌曲是否可播放
+            var songListContainer = document.getElementById('songList');
+            var songItems = songListContainer.getElementsByClassName('song-item');
+
+            Array.from(songItems).forEach(function(songItem, index) {
+                var song = songs[currentPage * 10 + index];
+                var audioCheck = new Audio();
+                audioCheck.src = song.song_url;
+                audioCheck.onerror = function() {
+                    var title = songItem.querySelector('span');
+                    title.textContent += '【版权限制】';
+                    title.style.color = 'red';
+                };
+            });
+        }
+
         function displaySongs() {
             var songListContainer = document.getElementById('songList');
             songListContainer.innerHTML = '';
+
             var endIndex = Math.min((currentPage + 1) * 10, songs.length);
 
             for (var i = currentPage * 10; i < endIndex; i++) {
@@ -97,9 +136,9 @@
                 playBtn.classList.add('play-btn');
                 playBtn.textContent = '播放';
 
-                // Creating a closure to capture the current value of 'song'
-                (function (currentSong) {
-                    playBtn.addEventListener('click', function () {
+                // 创建闭包以捕获当前的歌曲
+                (function(currentSong) {
+                    playBtn.addEventListener('click', function() {
                         playSong(currentSong.song_url, currentSong.song_cover, currentSong.song_name);
                     });
                 })(song);
@@ -109,9 +148,10 @@
                 songListContainer.appendChild(songItem);
             }
 
+            // 根据当前页面的位置显示或隐藏上一页和下一页按钮
             if (endIndex < songs.length) {
                 document.getElementById('nextPageBtn').style.display = 'inline-block';
-                if(currentPage != 0){
+                if (currentPage != 0) {
                     document.getElementById('firstPageBtn').style.display = 'inline-block';
                 } else {
                     document.getElementById('firstPageBtn').style.display = 'none';
@@ -122,6 +162,13 @@
         }
 
         function playSong(songUrl, coverUrl, title) {
+            audio.onerror = function() {
+                // 当歌曲无法播放时，触发onerror事件
+                var songTitle = document.querySelector('span:contains("' + title + '")');
+                songTitle.style.color = 'red'; // 将歌曲名称标记为红色
+                songTitle.textContent += '（版权限制）'; // 添加版权限制标记
+            };
+
             audio.onerror = function() {
                 $('#myModal').show();
             };
@@ -178,6 +225,7 @@
         function nextPage() {
             currentPage++;
             displaySongs();
+            checkCurrentPageSongs();
         }
 
         function firstPage() {
@@ -185,6 +233,7 @@
                 currentPage = currentPage - 1;
             }
             displaySongs();
+            checkCurrentPageSongs();
         }
     </script>
 </body>
