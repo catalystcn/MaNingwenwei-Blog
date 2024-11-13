@@ -40,6 +40,7 @@ conn = pymysql.connect(
 # Index Page
 @app.route('/')
 def index():
+    conn.ping(reconnect=True)
     cur = conn.cursor()
     cur.execute("SELECT id, title, content, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS created_at FROM posts ORDER BY created_at DESC")
     posts = cur.fetchall()
@@ -54,6 +55,7 @@ def markdown_filter(text):
 # Blog Post Page
 @app.route('/post/<int:post_id>')
 def post(post_id):
+    conn.ping(reconnect=True)
     cur = conn.cursor()
     cur.execute("SELECT * FROM posts WHERE id = %s", (post_id,))
     post = cur.fetchone()
@@ -68,6 +70,7 @@ def manage():
     if request.method == 'POST':
         password = request.form['password']
         # Query the database for the administrator password
+        conn.ping(reconnect=True)
         cur = conn.cursor()
         cur.execute("SELECT password FROM admin")
         result = cur.fetchone()
@@ -90,6 +93,7 @@ def manage():
 # ManagePanel
 @app.route('/manage_panel')
 def manage_panel():
+    conn.ping(reconnect=True)
     cur = conn.cursor()
     cur.execute("SELECT id, title, content, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS created_at FROM posts ORDER BY created_at DESC")
     posts = cur.fetchall()
@@ -99,6 +103,7 @@ def manage_panel():
 # ManagePost
 @app.route('/manage_post/<int:post_id>')
 def manage_post(post_id):
+    conn.ping(reconnect=True)
     cur = conn.cursor()
     cur.execute("SELECT * FROM posts WHERE id = %s", (post_id,))
     post = cur.fetchone()
@@ -108,6 +113,25 @@ def manage_post(post_id):
     else:
         return render_template('404.html'), 404
 
+# Update Post
+@app.route('/update_post/<int:post_id>', methods=['POST'])
+def update_post(post_id):
+    # Get the updated title and content from the form
+    title = request.form['title']
+    content = request.form['content']
+
+    conn.ping(reconnect=True)
+    cur = conn.cursor()
+
+    # Update the post in the database
+    cur.execute("UPDATE posts SET title = %s, content = %s WHERE id = %s", (title, content, post_id))
+    conn.commit()
+    cur.close()
+
+    # Redirect back to the manage post page with updated content
+    # flash('Post updated successfully', 'success')
+    return redirect(url_for('manage_post', post_id=post_id))
+
 # Add Post
 @app.route('/add_post', methods=['GET', 'POST'])
 def add_post():
@@ -115,6 +139,7 @@ def add_post():
         title = request.form['title']
         content = request.form['content']
         created_at = datetime.datetime.now()  # Get current datetime
+        conn.ping(reconnect=True)
         cur = conn.cursor()
         cur.execute("INSERT INTO posts (title, content, created_at) VALUES (%s, %s, %s)", (title, content, created_at))
         conn.commit()
@@ -126,6 +151,7 @@ def add_post():
 @app.route('/delete_post/<int:post_id>', methods=['POST'])
 def delete_post(post_id):
     if request.method == 'POST':
+        conn.ping(reconnect=True)
         cur = conn.cursor()
         cur.execute("DELETE FROM posts WHERE id = %s", (post_id,))
         conn.commit()
@@ -250,8 +276,9 @@ def tool3():
     return render_template('tool3.html', outputText=result)
 
 # 获取指定歌手的歌曲信息
+# 获取指定歌手的歌曲信息
 def get_artist_songs(artist_id):
-    url = 'https://music.163.com/api/v1/artist/songs'  ## 歌手歌曲信息api的url
+    url = 'https://music.163.com/api/v1/artist/songs'  # 歌手歌曲信息api的url
     params = {
         'id': artist_id,  # 歌手id
         'offset': 0,  # 偏移量
@@ -268,36 +295,68 @@ def get_artist_songs(artist_id):
         return None
 
 # 获取歌曲名称和播放链接
-def get_song_info(song):
+def get_song_info(song,search_type,input):
     song_name = song['name']  # 歌曲名称
     song_id = song['id']  # 歌曲id
-    song_cover = song['album']['blurPicUrl']
+    if search_type=='singer':
+        song_cover = song['album']['blurPicUrl']
+        song_people = input
+    elif search_type=='song':
+        song_cover = "https://p2.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg"
+        song_people = song['artists'][0]['name'] or "未知歌手"
     song_url = 'https://music.163.com/song/media/outer/url?id={}.mp3'.format(song_id)  # 歌曲播放链接
-    return song_name, song_url, song_cover
+    return song_name, song_url, song_cover ,song_people
 
-# 搜索歌手路由
+# 根据音乐名搜索歌曲ID
+def search_song(search_content):
+    search_url = f'https://music.163.com/api/search/get/web?csrf_token=&hlpretag=&hlposttag=&s={search_content}&type=1&offset=0&total=true&limit=5'
+    response = requests.get(url=search_url, headers=headers)
+    if response.status_code == 200:
+        result = response.json()
+        song_list = result['result']['songs']
+        return song_list
+    else:
+        print('请求出错：', response.status_code)
+        return None
+
+# 搜索歌手或歌名路由
 @app.route('/search')
 def search():
-    singer_name = request.args.get('singer')
+    search_input = request.args.get('input')
+    search_type = request.args.get('type')
 
-    # Fetch artist_id from database
-    cur = conn.cursor()
-    cur.execute("SELECT id FROM singer_id WHERE singer=%s", singer_name)
-    artist_id = cur.fetchone()
-    cur.close()
+    if search_type == 'singer':
+        # Fetch artist_id from database
+        conn.ping(reconnect=True)
+        cur = conn.cursor()
+        cur.execute("SELECT id FROM singer_id WHERE singer=%s", (search_input,))
+        artist_id = cur.fetchone()
+        cur.close()
 
-    if artist_id:
-        songs = get_artist_songs(artist_id[0])  # 获取歌手的歌曲信息
+        if artist_id:
+            songs = get_artist_songs(artist_id[0])  # 获取歌手的歌曲信息
+            if songs:
+                song_list = []
+                for song in songs:
+                    song_name, song_url, song_cover,song_people= get_song_info(song,search_type,search_input)  # 获取歌曲名称和播放链接
+                    song_list.append({'song_name': song_name, 'song_url': song_url, 'song_cover': song_cover, 'artist_names': song_people})
+                return jsonify(song_list)
+            else:
+                return jsonify({'error': '获取歌曲信息失败！'}), 500
+        else:
+            return jsonify({'error': '歌手未找到！'}), 404
+    elif search_type == 'song':
+        songs = search_song(search_input)  # 根据歌名搜索歌曲
         if songs:
             song_list = []
             for song in songs:
-                song_name, song_url, song_cover = get_song_info(song)  # 获取歌曲名称和播放链接
-                song_list.append({'song_name': song_name, 'song_url': song_url, 'song_cover': song_cover})
+                song_name, song_url, song_cover,song_people= get_song_info(song,search_type,search_input)  # 获取歌曲名称和播放链接
+                song_list.append({'song_name': song_name, 'song_url': song_url, 'song_cover': song_cover,'artist_names': song_people})
             return jsonify(song_list)
         else:
             return jsonify({'error': '获取歌曲信息失败！'}), 500
     else:
-        return jsonify({'error': '歌手未找到！'}), 404
+        return jsonify({'error': '无效的搜索类型！'}), 400
 
 @app.route('/tool4')
 def tool4():

@@ -16,8 +16,14 @@
     <div class="container">
         <h1>🌈音乐播放器</h1>
         <div class="greyLine" style="color:green">你想听哪位歌手的歌呢？</div>
-        <input type="text" id="singerName" placeholder="请输入歌手名">
-        <button onclick="searchSongs()">搜索</button>
+        <div>
+            <input type="radio" id="searchBySinger" name="searchType" value="singer" checked>
+            <label for="searchBySinger">歌手</label>
+            <input type="radio" id="searchBySong" name="searchType" value="song">
+            <label for="searchBySong">歌名</label>
+        </div>
+        <input type="text" id="searchInput" placeholder="请输入歌手名或歌名">
+        <button onclick="search()">搜索</button>
         <div id="songList"></div>
         <div class="pagination-container">
             <button id="firstPageBtn" class="pagination-btn" style="display: none;" onclick="firstPage()">前10首</button>
@@ -30,7 +36,7 @@
         <div class="song-info">
             <img id="floating-cover" src="" alt="Cover">
             <div id="floating-title"></div>
-            <button id="play-pause-btn" >暂停</button>
+            <button id="play-pause-btn">暂停</button>
         </div>
         <div class="progress-bar">
             <div id="floating-progress" class="progress"></div>
@@ -53,12 +59,11 @@
     </div>
 
     <script>
-
         var currentPage = 0;
         var songs = [];
         var audio = new Audio();
 
-    // Function to show error modal
+        // Function to show error modal
         function showErrorModal(message) {
             document.getElementById('errorMessage').textContent = message;
             $('#errorModal').show();
@@ -69,16 +74,17 @@
             $('#errorModal').hide();
         });
 
-        function searchSongs() {
+        function search() {
             currentPage = 0;
-            var singerName = document.getElementById('singerName').value;
-            getSongs(singerName);
+            var searchInput = document.getElementById('searchInput').value;
+            var searchType = document.querySelector('input[name="searchType"]:checked').value;
+            getSongs(searchInput, searchType);
         }
 
-        function getSongs(singerName) {
+        function getSongs(searchInput, searchType) {
             // Make AJAX request to server to get song list
             var xhr = new XMLHttpRequest();
-            xhr.open('GET', '/search?singer=' + encodeURIComponent(singerName), true);
+            xhr.open('GET', '/search?input=' + encodeURIComponent(searchInput) + '&type=' + searchType, true);
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
@@ -87,7 +93,7 @@
                         displaySongs();
                         checkCurrentPageSongs();
                     } else if (xhr.status === 404) {
-                        showErrorModal('搜索无结果，请检查歌手名是否正确');
+                        showErrorModal('搜索无结果，请检查输入是否正确');
                     } else {
                         showErrorModal('发生错误，请重试！');
                     }
@@ -129,7 +135,7 @@
                 songItem.appendChild(img);
 
                 var title = document.createElement('span');
-                title.textContent = song.song_name;
+                title.textContent = `${song.song_name} - ${song.artist_names}`;
                 songItem.appendChild(title);
 
                 var playBtn = document.createElement('button');
@@ -216,11 +222,6 @@
                 audio.currentTime = percent * audio.duration;
             });
         }
-
-        // Close modal when "关闭" button is clicked
-        $('#closeModalBtn').click(function() {
-            $('#myModal').hide();
-        });
 
         function nextPage() {
             currentPage++;

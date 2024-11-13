@@ -276,9 +276,9 @@ body {
 }
 
 /* Add click effect */
-.container:hover {
-    transform: scale(1.03); /* Increase size on hover */
-}
+/*.container:hover {*/
+/*    transform: scale(1.03); !* Increase size on hover *!*/
+/*}*/
 
 .container-tool {
     margin: auto;
