@@ -13,9 +13,36 @@
         }
         #merge-form {
             text-align: center;
+            width: 100%;
         }
         .button {
+            margin-top: 20px;
+        }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: none;
             margin-top: 10px;
+        }
+        .success-message {
+            color: green;
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            width: 100%;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .disabled {
+            pointer-events: none;
+            opacity: 0.6;
         }
     </style>
     <script src="./static/ajax.js"></script>
@@ -36,8 +63,10 @@
             </div>
             <div class="greyLine"></div>
             <input type="submit" value="合并PDF" class="button">
+            <div class="spinner" id="spinner"></div>
+            <div class="success-message" id="successMessage" style="display:none;">上传成功！</div>
             <div class="greyLine"></div>
-            <a id="download-btn" href="{{ url_for('download_merged_pdf') }}" download="merged_pdf.pdf" class="button">下载合并后的PDF</a>
+            <a id="download-btn" href="{{ url_for('download_merged_pdf') }}" download="merged_pdf.pdf" class="button disabled">下载合并后的PDF</a>
         </form>
         <div class="greyLine"></div>
     </div>
@@ -48,44 +77,54 @@
         </div>
     </div>
     <script>
-        $('#merge-form').submit(function(e) {
-            e.preventDefault();
+        $(document).ready(function() {
+    // 点击文件选择框时隐藏“上传成功！”消息
+    $('#folder').on('click', function() {
+        $('#successMessage').hide(); // 隐藏成功消息
+        $('#download-btn').addClass('disabled'); // 禁用下载按钮
+    });
 
-            var formData = new FormData(this);
+    // 提交表单处理文件上传
+    $('#merge-form').submit(function(e) {
+        e.preventDefault();
 
-            $.ajax({
-                type: 'POST',
-                url: '/merge_pdf',
-                data: formData,
-                processData: false,
-                contentType: false,
-                xhr: function() {
-                    var xhr = new window.XMLHttpRequest();
-                    xhr.upload.addEventListener('progress', function(evt) {
-                        if (evt.lengthComputable) {
-                            var percentComplete = (evt.loaded / evt.total) * 100;
-                            $('#progress-bar').val(percentComplete);
-                        }
-                    }, false);
-                    return xhr;
-                },
-                success: function(response) {
-                    $('#myModal').show();  // Show modal
-<!--                    $('#download-btn').attr('href', response.file_url);-->
-                },
-                error: function(xhr, status, error) {
-                    console.log('Error:', error);
-                }
-            });
+        var formData = new FormData(this);
 
-            $('#download-btn').addClass('disabled'); // Disable download button while merging
+        // 显示加载圈
+        $('#spinner').show();
+        $('#successMessage').hide(); // 隐藏成功信息
+
+        $.ajax({
+            type: 'POST',
+            url: '/merge_pdf',
+            data: formData,
+            processData: false,
+            contentType: false,
+            xhr: function() {
+                var xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener('progress', function(evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = (evt.loaded / evt.total) * 100;
+                        $('#progress-bar').val(percentComplete);
+                    }
+                }, false);
+                return xhr;
+            },
+            success: function(response) {
+                $('#spinner').hide();  // 隐藏加载圈
+                $('#successMessage').fadeIn(); // 显示“上传成功！”消息
+                $('#download-btn').removeClass('disabled');  // 启用下载按钮
+
+            },
+            error: function(xhr, status, error) {
+                console.log('Error:', error);
+                $('#spinner').hide();  // 隐藏加载圈
+            }
         });
-        // Close modal when "关闭" button is clicked
-        $('#closeModalBtn').click(function() {
-            $('#myModal').hide();
-        });
+
+        $('#download-btn').addClass('disabled'); // Disable download button while merging
+    });
+});
     </script>
-
 </body>
 </html>
-

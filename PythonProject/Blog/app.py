@@ -89,7 +89,6 @@ def manage():
 
     return render_template('manage.html')
 
-
 # ManagePanel
 @app.route('/manage_panel')
 def manage_panel():
@@ -116,19 +115,16 @@ def manage_post(post_id):
 # Update Post
 @app.route('/update_post/<int:post_id>', methods=['POST'])
 def update_post(post_id):
-    # Get the updated title and content from the form
     title = request.form['title']
     content = request.form['content']
 
     conn.ping(reconnect=True)
     cur = conn.cursor()
 
-    # Update the post in the database
     cur.execute("UPDATE posts SET title = %s, content = %s WHERE id = %s", (title, content, post_id))
     conn.commit()
     cur.close()
 
-    # Redirect back to the manage post page with updated content
     # flash('Post updated successfully', 'success')
     return redirect(url_for('manage_post', post_id=post_id))
 
@@ -257,18 +253,59 @@ def tool2():
 
 @app.route('/translate', methods=['POST'])
 def translate():
-    result=""
-    if request.method == 'POST':
-        url = 'https://m.youdao.com/translate'
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0'
-        }
-        text = request.form['inputText']
-        data = {"inputtext": text, "type": "AUTO"}
-        res = requests.post(url=url, headers=headers, data=data)
-        soup = BeautifulSoup(res.text, 'html.parser')
-        result = soup.find(id='translateResult').get_text()
+    mode = request.form.get('mode', 'original')  # 默认为 'original' 模式
+    text = request.form.get('inputText', '')
+
+    if not text:
+        return jsonify({'error': '输入内容为空！'}), 400
+
+    try:
+        if mode == 'baidu':
+            result = baidu_translate(text)
+        else:
+            result = original_translate(text)  # 使用原始翻译逻辑
+            result = result.lstrip('\n')
+        return result
+    except Exception as e:
+        return jsonify({'error': f'翻译失败：{str(e)}'}), 500
+
+
+# 原始翻译逻辑
+def original_translate(text):
+    url = 'https://m.youdao.com/translate'
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0'
+    }
+    data = {"inputtext": text, "type": "AUTO"}
+    response = requests.post(url=url, headers=headers, data=data)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    return soup.find(id='translateResult').get_text()
+
+
+# 百度翻译逻辑
+def baidu_translate(text):
+    url = f"https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-speed-128k?access_token={get_access_token()}"
+    payload = json.dumps({
+        "messages": [
+            {
+                "role": "user",
+                "content": f"我将用任何语言与你交谈，你将检测语言，翻译它，如果是中文翻译成英文，如果不是中文，翻译成中文，翻译要符合口语，避免像书面语。下面是翻译内容：{text}"
+            }
+        ]
+    })
+    headers = {'Content-Type': 'application/json'}
+    response = requests.post(url, headers=headers, data=payload)
+    result = response.json().get('result', '翻译失败！')
     return result
+
+
+def get_access_token():
+    API_KEY = "3YLv5zYD4au8QOowGD8GgbA3"
+    SECRET_KEY = "gMtt3m0CwGHmahldks58Pbp1sVUX6rsb"
+    url = "https://aip.baidubce.com/oauth/2.0/token"
+    params = {"grant_type": "client_credentials", "client_id": API_KEY, "client_secret": SECRET_KEY}
+    response = requests.post(url, params=params)
+    return response.json().get("access_token")
 
 @app.route('/tool3')
 def tool3():

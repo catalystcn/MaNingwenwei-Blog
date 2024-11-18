@@ -5,8 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>智能翻译</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script src="./static/ajax.js"></script>
-    <script src="./static/cursor_click.js"></script>
+    <style>
+        /* 加载圈的样式 */
+        .spinner {
+            padding-left: 5px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 15px;
+            height: 15px;
+            animation: spin 1s linear infinite;
+            display: none;  /* 默认隐藏 */
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
     <div class="navbar">
@@ -16,24 +32,46 @@
     <div class="container">
         <h1>🌈智能翻译</h1>
         <div class="greyLine" style="color:green">支持中文转英文，任何语言转中文</div>
-        <form action="/translate" method="post">
+        <form id="translateForm">
             <label for="inputText">输入内容：</label>
             <textarea id="inputText" name="inputText"></textarea>
+
+            <label for="mode">翻译模式：</label>
+            <select id="mode" name="mode">
+                <option value="original">普通翻译</option>
+                <option value="baidu">AI翻译</option>
+            </select>
+
             <button type="submit">翻译</button>
+            <!-- 添加加载圈 -->
+            <div class="spinner" id="spinner"></div>
         </form>
         <label for="outputText">翻译结果：</label>
         <textarea id="outputText" name="outputText" readonly></textarea>
     </div>
+
     <script>
-        document.querySelector('form').addEventListener('submit', async function(event) {
+        document.querySelector('#translateForm').addEventListener('submit', async function(event) {
             event.preventDefault();
+
+            const spinner = document.getElementById('spinner');
+            spinner.style.display = 'inline-block';  // 显示加载圈
+
             const formData = new FormData(this);
             const response = await fetch('/translate', {
                 method: 'POST',
                 body: formData
             });
-            const result = await response.text();
-            document.getElementById('outputText').value = result;
+
+            spinner.style.display = 'none';  // 隐藏加载圈
+
+            if (response.ok) {
+                const result = await response.text();
+                document.getElementById('outputText').value = result;
+            } else {
+                const error = await response.json();
+                alert(error.error);
+            }
         });
     </script>
 </body>
